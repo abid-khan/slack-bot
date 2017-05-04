@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="issues">
+    <option name="index">
+      <map>
+        <entry key="/Dummy.txt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AppDirect/appdirect-parent/appdirect-billing/appdirect-billing-api/src/main/java/com/appdirect/backend/billing/jbilling/BillingAPI.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AppDirect/appdirect-parent/appdirect/pom.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AppDirect/appdirect-parent/appdirect/src/main/java/com/appdirect/backend/billing/jbilling/JBillingAPI.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AppDirect/appdirect-parent/appdirect/src/main/java/com/appdirect/backend/billing/service/PaymentInstrumentServiceImpl.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AppDirect/appdirect-parent/appdirect/src/main/java/com/appdirect/wicket/common/application/AppDirectApplication.properties">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../AppDirect/appdirect-parent/appdirect/src/test/java/com/appdirect/wicket/marketplace/panels/purchase/payment/telstra/BillPayRedirectModalWindowTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../billing-integration/billing-integration/billing-integration-billpay/src/main/java/com/appdirect/billing/billpay/api/BillPayAPI.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../billing-integration/billing-integration/billing-integration-billpay/src/main/java/com/appdirect/billing/billpay/api/BillPayAPIImpl.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../billing-integration/billing-integration/billing-integration-billpay/src/main/java/com/appdirect/billing/billpay/service/BillPayServiceImpl.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../billing-integration/billing-integration/billing-integration-billpay/src/main/java/com/appdirect/billing/billpay/type/BillPayConstants.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../billing-integration/billing-integration/billing-integration-billpay/src/main/java/com/appdirect/billing/billpay/util/RequestBuilder.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../billing-integration/billing-integration/pom.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jbilling/grails-app/conf/BuildConfig.groovy">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jbilling/grails-app/controllers/jbilling/RedirectServiceController.groovy">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/pom.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/java/com/appdirect/jira/Quickstart.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/java/com/appdirect/jira/api/CalenderController.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/java/com/appdirect/jira/api/GoogleCallbackController.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/java/com/appdirect/jira/api/GoogleController.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/java/com/appdirect/jira/api/GoogleRestController.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/java/com/appdirect/jira/api/OAuthController.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/java/com/appdirect/jira/api/OAuthController1.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/java/com/appdirect/jira/api/ProjectController.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/java/com/appdirect/jira/config/GoogleConfig.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/java/com/appdirect/jira/config/JerseyConfig.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/java/com/appdirect/jira/config/MVCConfig.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/java/com/appdirect/jira/helper/google/CalendarHelper.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/java/com/appdirect/jira/helper/google/OAuthHelper.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/java/com/appdirect/jira/props/OAuth.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/java/com/appdirect/jira/service/GoogleCalendarService.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/java/com/appdirect/jira/vo/Meeting.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/java/com/appdirect/jira/vo/Meetings.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/resources/application.properties">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/resources/client_secret.json">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/resources/static/calender.html">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/resources/templates/callback.html">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/resources/templates/index.html">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../jira/src/main/resources/templates/success.html">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/.env">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/controllers/calendar.js">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/controllers/welcome.js">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/index.js">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/models/user.js">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/package.json">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="/a.dummy">
+          <value>
+            <set />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
