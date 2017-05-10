@@ -1,5 +1,5 @@
 module.exports = function(controller, User) {
-    controller.hears(['color'], 'direct_message,direct_mention', function(bot, message) {
+    controller.hears(['color'], 'direct_message,direct_mention, event_callback', function(bot, message) {
         console.log('user detail ==> ' + JSON.stringify(message));
 
 
