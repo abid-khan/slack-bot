@@ -8,20 +8,24 @@ module.exports = function (controller, restClient) {
     var Meetings = require('../vo/meeting/meetings');
 
 
-    var buildAction = (name, text, value) => {
-        return new Action(name, text, value);
+    var buildAction = (name, text, value,style) => {
+        var action = new Action(name, text, value,style);
+        return action;
     };
 
     var buildField = (title, value, isShort) => {
-        return new Field(title, value, isShort);
+        var field= new Field(title, value, isShort);
+        return field;
     };
 
     var buildMeeting=(title,text,color,callbackId, fields,actions)=>{
-        return new Meeting(title,text,color,callbackId,fields,actions);
+        var meeting = new Meeting(title,text,color,callbackId,fields,actions);
+        return meeting;
     };
 
     var buildMeetings=(text, attachments)=>{
-        return new Meetings(text,attachments);
+        var meetings= new Meetings(text,attachments);
+        return meetings;
     };
 
     /**
@@ -121,12 +125,16 @@ module.exports = function (controller, restClient) {
                                 for (var i = 0; i < data.items.length; i++) {
                                     var fields=new Array();
                                     var whereField = buildField('Where',data.items[i].location,true);
-                                    fields.push(whenField);
+                                    fields.push(whereField);
                                     var startTime = datetime.create(data.items[i].startTime);
                                     var fomrattedTime = startTime.format('m/d/Y H:M:S');
                                     var whenField = buildField('When',fomrattedTime,true);
                                     fields.push(whenField);
-                                    var meeting= buildMeeting(data.items[i].summary,data.items[i].description,'#7CD197','google_meeting',fields,null);
+                                    var actions =  new Array();
+                                    var hangoutAction=buildAction("hangout","Join Meeting",data.items[i].hangoutLink, 'primary');
+                                    actions.push(hangoutAction);
+
+                                    var meeting= buildMeeting(data.items[i].summary,data.items[i].description,data.items[i].color ? data.items[i].color:'#7CD197','google_meeting',fields,actions);
                                     meetings.push(meeting);
                                 }
 

@@ -3,10 +3,13 @@
  */
 'use strict';
 
-function Field(inputTitle, inputValue, isShort) {
-    var title= inputTitle;
-    var value=inputValue;
-    var short=isShort;
-};
+class Field {
+    constructor(inputTitle, inputValue, isShort) {
+        this.title = inputTitle;
+        this.value = inputValue;
+        this.short = isShort;
+    }
+
+}
 
 module.exports = Field;

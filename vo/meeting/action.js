@@ -3,11 +3,15 @@
  */
 'use strict';
 
-function Action(inputName, inputText, inputValue) {
-    var name = inputName;
-    var text = inputText;
-    var value = inputValue
-    var type = "button";
-};
+class Action{
+
+    constructor(inputName, inputText, inputValue, inputStyle) {
+        this.name = inputName;
+        this.text = inputText;
+        this.value = inputValue
+        this.style=inputStyle;
+        this.type = "button";
+    }
+}
 
 module.exports = Action;

@@ -3,13 +3,15 @@
  */
 'use strict';
 
-function Meeting(inputeTitle, inputText, inputColor,inputCallbackId, inputFields, inputActions){
-    var title =inputeTitle;
-    var text= inputText;
-    var color = inputColor;
-    var callback_id = inputCallbackId;
-    var fields = inputFields;
-    var actions = inputActions;
+class Meeting {
+    constructor(inputeTitle, inputText, inputColor, inputCallbackId, inputFields, inputActions) {
+        this.title = inputeTitle;
+        this.text = inputText;
+        this.color = inputColor;
+        this.callback_id = inputCallbackId;
+        this.fields = inputFields;
+        this.actions = inputActions;
+    }
+}
 
-};
 module.exports = Meeting;

@@ -9,7 +9,7 @@ var jiraInteractive = require('./jira_interactive');
 module.exports = function(controller,restClient) {
     welcome(controller);
     calender(controller,restClient);
-   // calendarInteractive(controller);
+    calendarInteractive(controller);
     jira(controller);
     jiraInteractive(controller);
 };
