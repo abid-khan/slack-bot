@@ -123,16 +123,26 @@ module.exports = function (controller, restClient) {
 
                                 var meetings = new Array();
                                 for (var i = 0; i < data.items.length; i++) {
+                                    //-------Add fields
                                     var fields=new Array();
+                                    //--Add where
                                     var whereField = buildField('Where',data.items[i].location,true);
                                     fields.push(whereField);
+                                    //--Add when
                                     var startTime = datetime.create(data.items[i].startTime);
                                     var fomrattedTime = startTime.format('m/d/Y H:M:S');
                                     var whenField = buildField('When',fomrattedTime,true);
                                     fields.push(whenField);
+
+                                    //--------Add Actions
                                     var actions =  new Array();
-                                    var hangoutAction=buildAction("hangout","Join Meeting",data.items[i].hangoutLink, 'primary');
-                                    actions.push(hangoutAction);
+                                    if(data.items[i].hangoutLink){
+                                        var hangoutAction=buildAction("hangout","Join Meeting",data.items[i].hangoutLink, 'primary');
+                                        actions.push(hangoutAction);
+                                    }else{
+                                        actions=null;
+                                    }
+
 
                                     var meeting= buildMeeting(data.items[i].summary,data.items[i].description,data.items[i].color ? data.items[i].color:'#7CD197','google_meeting',fields,actions);
                                     meetings.push(meeting);
@@ -147,7 +157,6 @@ module.exports = function (controller, restClient) {
 
                             });
                             convo.next();
-                            // do something awesome here.
                         }
                     },
                     {
@@ -198,7 +207,6 @@ module.exports = function (controller, restClient) {
                         pattern: "authorize",
                         callback: function (reply, convo) {
                             open(url);
-                            convo.next();
                         }
                     },
                     {
