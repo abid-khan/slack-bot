@@ -1,4 +1,10 @@
 module.exports = function(controller, User) {
+<<<<<<< HEAD
+    controller.hears(['color'], 'direct_message,direct_mention, event_callback', function(bot, message) {
+        console.log('user detail ==> ' + JSON.stringify(message));
+=======
+>>>>>>> added new files
+
     controller.hears(['hello'], 'direct_message,direct_mention', function(bot, message) {
 
         var reply_with_attachments = {
