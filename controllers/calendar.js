@@ -2,6 +2,27 @@ module.exports = function (controller, restClient) {
 
     var open = require('open');
     var datetime = require('node-datetime');
+    var Action = require('../vo/meeting/action');
+    var Field = require('../vo/meeting/field');
+    var Meeting = require('../vo/meeting/meeting');
+    var Meetings = require('../vo/meeting/meetings');
+
+
+    var buildAction = (name, text, value) => {
+        return new Action(name, text, value);
+    };
+
+    var buildField = (title, value, isShort) => {
+        return new Field(title, value, isShort);
+    };
+
+    var buildMeeting=(title,text,color,callbackId, fields,actions)=>{
+        return new Meeting(title,text,color,callbackId,fields,actions);
+    };
+
+    var buildMeetings=(text, attachments)=>{
+        return new Meetings(text,attachments);
+    };
 
     /**
      *
@@ -95,47 +116,24 @@ module.exports = function (controller, restClient) {
                             console.log("user requested for upcoming " + 5 + " meetings");
                             findMeetings(message.user, 5).then(function (data) {
                                 console.log(JSON.stringify(data));
-                                var meetings = new Object();
-                                meetings.text='Your upcoming meetings...';
-                                meetings.attachments= new Array();
+
+                                var meetings = new Array();
                                 for (var i = 0; i < data.items.length; i++) {
-                                    var meeting = new Object();
-                                    meeting.title= data.items[i].summary;
-                                    var fields =  new Array();
-
-                                    var startTimeField  = new Object();
-                                    startTimeField.title='When';
-                                    var startTime= datetime.create(data.items[i].startTime);
+                                    var fields=new Array();
+                                    var whereField = buildField('Where',data.items[i].location,true);
+                                    fields.push(whenField);
+                                    var startTime = datetime.create(data.items[i].startTime);
                                     var fomrattedTime = startTime.format('m/d/Y H:M:S');
-                                    startTimeField.value= fomrattedTime;
-                                    startTimeField.short=false;
-                                    fields.push(startTimeField);
-
-                                    var whereField  = new Object();
-                                    whereField.title='Where';
-                                    whereField.value= data.items[i].location;
-                                    whereField.short=false;
-                                    fields.push(whereField);
-
-
-                                    var descField  = new Object();
-                                    descField.title='Description';
-                                    descField.value= data.items[i].description;
-                                    descField.short=false;
-                                    fields.push(descField);
-
-                                    var hangoutField  = new Object();
-                                    hangoutField.title='Link';
-                                    hangoutField.value= data.items[i].hangoutLink;
-                                    hangoutField.short=false;
-                                    fields.push(hangoutField);
-
-
-                                    meeting.fields=fields;
-                                    meeting.color= '#7CD197';
-                                    meetings.attachments[i]=meeting;
+                                    var whenField = buildField('When',fomrattedTime,true);
+                                    fields.push(whenField);
+                                    var meeting= buildMeeting(data.items[i].summary,data.items[i].description,'#7CD197','google_meeting',fields,null);
+                                    meetings.push(meeting);
                                 }
-                                bot.reply(message, meetings);
+
+                                var replyAsAttachment = buildMeetings("Your upcoming meetings...",meetings);
+
+                                bot.reply(message, replyAsAttachment);
+                                convo.next();
                             }, function (err) {
                                 console.error("Failed due to ", err);
 
@@ -170,24 +168,38 @@ module.exports = function (controller, restClient) {
 
                 console.log('Not authorized..', url);
                 convo.ask({
-                        text: 'Oops! you have not authorized me to access your calendar.',
-                        attachments: [
-                            {
-                                title: 'Authorize me',
-                                attachment_type: 'default',
-                                callback_id: 'google_oauth',
-                                actions: [
-                                    {
-                                        name: "Authorize",
-                                        text: "Authorize",
-                                        value: "authorize",
-                                        type: "button",
-                                        style: "primary",
-                                    }
-                                ]
-                            }
-                        ]
-                    });
+                    text: 'Oops! you have not authorized me to access your calendar.',
+                    attachments: [
+                        {
+                            title: 'Authorize me',
+                            attachment_type: 'default',
+                            callback_id: 'google_oauth',
+                            actions: [
+                                {
+                                    name: "Authorize",
+                                    text: "Authorize",
+                                    value: "authorize",
+                                    type: "button",
+                                    style: "primary",
+                                }
+                            ]
+                        }
+                    ]
+                }, [
+                    {
+                        pattern: "authorize",
+                        callback: function (reply, convo) {
+                            open(url);
+                            convo.next();
+                        }
+                    },
+                    {
+                        default: true,
+                        callback: function (reply, convo) {
+                            // do nothing
+                        }
+                    }
+                ]);
             }).catch(function (err) {
                 console.error("Failed due to ", err);
             });

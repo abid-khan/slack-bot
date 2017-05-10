@@ -21,7 +21,9 @@ var controller = Botkit.slackbot({
 
 
 var User = require('./models/user');
-require('./controllers/index')(controller);
+var Client = require('node-rest-client').Client;
+var restClient = new Client();
+require('./controllers/index')(controller,restClient);
 
 // if you are already using Express, you can use your own server instance...
 // see "Use BotKit with an Express web server"
