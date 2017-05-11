@@ -38,9 +38,9 @@ module.exports = function (controller, restClient,wit) {
      * @param maxCount
      * @returns {{parameters: {userId: *, maxCount: *}}}
      */
-    var constructArgument = (userId, maxCount) => {
+    var constructArgument = (userId, channelId, teamId, maxCount) => {
         var args = {
-            parameters: {userId: userId, maxCount: maxCount},
+            parameters: {userId: userId,channelId:channelId, teamId:teamId,maxCount: maxCount},
         };
         return args;
     };
@@ -51,9 +51,9 @@ module.exports = function (controller, restClient,wit) {
      * @param userId
      * @returns {Promise}
      */
-    var isAuthorized = (userId) => {
+    var isAuthorized = (userId, channelId, teamId) => {
         return new Promise(function (authorizedCallback, unAuthorizeCallback) {
-            restClient.get(process.env.restClientUrl + "/oauth/google", constructArgument(userId, 0),
+            restClient.get(process.env.restClientUrl + "/oauth/google", constructArgument(userId, channelId, teamId, 0),
                 function (data, response) {
                     console.log("Is authorized for userId " + userId + " .. " + JSON.stringify(data));
                     if (data.url) {
@@ -74,10 +74,10 @@ module.exports = function (controller, restClient,wit) {
      * @param count
      * @returns {Promise}
      */
-    var findMeetings = (convo,userId, count) => {
+    var findMeetings = (convo,userId,channelId,teamId, count) => {
         return new Promise(function (successCallback, errorCallback) {
             convo.say("	:loading: ...we are preparing your :knife_fork_plate: ");
-            restClient.get(process.env.restClientUrl + "/google/calendar/meetings", constructArgument(userId, count),
+            restClient.get(process.env.restClientUrl + "/google/calendar/meetings", constructArgument(userId, channelId, teamId, count),
                 function (data, response) {
                     console.log("Meetings ..." + JSON.stringify(data));
                     successCallback(data);
@@ -93,7 +93,9 @@ module.exports = function (controller, restClient,wit) {
         bot.startConversation(message, function (err, convo) {
             convo.say('Hey, there!');
 
-            isAuthorized(message.user).then(function () {
+            console.log("mm.."+ JSON.stringify(message));
+
+            isAuthorized(message.user,message.channel, message.team).then(function () {
                 //handle authorized flow
                 //TODO
                 convo.ask({
@@ -123,7 +125,7 @@ module.exports = function (controller, restClient,wit) {
                         pattern: "5",
                         callback: function (reply, convo) {
                             console.log("user requested for upcoming " + 5 + " meetings");
-                            findMeetings(convo,message.user, 5).then(function (data) {
+                            findMeetings(convo,message.user,message.channel, message.team, 5).then(function (data) {
                                 console.log(JSON.stringify(data));
 
                                 var meetings = new Array();
@@ -217,12 +219,14 @@ module.exports = function (controller, restClient,wit) {
                         pattern: "authorize",
                         callback: function (reply, convo) {
                             open(url);
+                            convo.next();
                         }
                     },
                     {
                         default: true,
                         callback: function (reply, convo) {
                             // do nothing
+                            convo.next();
                         }
                     }
                 ]);
