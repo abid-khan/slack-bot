@@ -9,7 +9,7 @@ let constants = require('../config/constants_dev');
 let jiraService = {};
 
 jiraService.getAllOpenIssues = function(userId, typeId, convo) {
-    let url = config.allIssuesUrl + '?userId=' + userId + '&typeId=' + typeId;
+    let url = config.allIssuesUrl + '?userId=' + userId + '&type=' + typeId;
     console.log(url);
     rp.get(url).then(function (response, body) {
         console.log("Issue from Jira" + response);
@@ -28,6 +28,7 @@ jiraService.getOpenIssueById = function(userId, jiraId, convo) {
         let issue = JSON.parse(response);
         convo.say(buildIssueResponse(issue));
     }).catch(function (err) {
+        console.log(err);
         convo.say(buildfailureResponse(err));
     });
 };
@@ -47,6 +48,22 @@ jiraService.getCommentsForIssue = function(userId, jiraId, convo) {
 };
 
 
+jiraService.askMoreQuestions = function(userId, convo) {
+    convo.ask(askMoreQuestions(userId));
+};
+
+let askMoreQuestions = (userId) => {
+    let header = new templates.templateHead(constants.convo.issue.undecidedText, []);
+    let body = new templates.templateBody("Select one!", "", constants.priority.Low, constants.convo.issue.undecidedTextId , [], []);
+    body.actions = [
+        new templates.templateAction(constants.convo.issue.ihavebeenmentionedId, constants.convo.issue.ihavebeenmentioned, "", "button"),
+        new templates.templateAction(constants.convo.issue.iamassignedId, constants.convo.issue.iamassigned, "", "button"),
+        new templates.templateAction(constants.convo.issue.reportedbymeId, constants.convo.issue.reportedbyme, "", "button"),
+    ]
+    header.attachments.push(body);
+    return header;
+};
+
 let buildIssueListResponse = (issues) => {
     let issueHeader = new templates.templateHead(constants.convo.openIssuesResponse, []);
     for(let index in issues) {
@@ -55,7 +72,7 @@ let buildIssueListResponse = (issues) => {
         let issueField1 = new templates.templateField("Reporter", issue.reporter.name, true);
         let issueField2 = new templates.templateField("Priority", issue.priority, true);
         issueBody.fields.push(issueField1, issueField2);
-        let issueDetailAction = new templates.templateAction("issue_detail", constants.convo.issueDetailButtonText, issue.key, "primary");
+        let issueDetailAction = new templates.templateAction(issue.key, constants.convo.issueDetailButtonText, "", "primary");
         issueBody.actions.push(issueDetailAction);
         issueHeader.attachments.push(issueBody);
     }
@@ -69,7 +86,7 @@ let buildCommentResponse = (comments) => {
         let commentHeader = new templates.templateHead(comments.length + constants.convo.comment.commentsFound, []);
         for(let index in comments) {
             let comment = comments[index];
-            let commentBody = new templates.templateBody(comment.body , '', null, '', [], []);
+            let commentBody = new templates.templateBody(comment.body , '', constants.convo.comment.color, '', [], []);
             commentBody.fields = [new templates.templateField("Author", comment.auther.name, false),
                                     new templates.templateField("Created Date", formatDate(comment.createdDate), true),
                                         new templates.templateField("Updated Date", formatDate(comment.updatedDate), true)]

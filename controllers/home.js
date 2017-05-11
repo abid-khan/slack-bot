@@ -21,6 +21,12 @@ module.exports = function(controller) {
         console.log(message);
     });
 
+    controller.hears(['Redirecting to'], 'direct_message,direct_mention', function(bot, message) {
+        bot.startConversation(message, function(err, convo) {
+           convo.next()
+        });
+    });
+
     controller.hears([''], 'direct_message,direct_mention', function(bot, message) {
         bot.startConversation(message, function(err, convo) {
             if(message) {
