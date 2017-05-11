@@ -8,7 +8,7 @@ var openIssueTemplate = {
         {
             "title": ":key",
             "text": ":summary",
-            "color": ":color",
+            "color": "#F00", //"color": ":color"
             "fields": [
                 {
                     "title": "Reporter",
@@ -17,7 +17,7 @@ var openIssueTemplate = {
                 },
                 {
                     "title": "Priority",
-                    "value": ":priority",
+                    "value": "dummypriority", //"value" : ":priority"
                     "short": true
                 },
             ],

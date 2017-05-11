@@ -3,6 +3,8 @@ dotenv.load();
 
 var Botkit = require('botkit');
 var mongoStorage = require('botkit-storage-mongo')({mongoUri: 'mongodb://127.0.0.1/slack'});
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://127.0.0.1/slack');
 
 var controller = Botkit.slackbot({
     debug: false,
@@ -21,7 +23,7 @@ var controller = Botkit.slackbot({
 
 var wit = require('botkit-witai')({
     accessToken: process.env.wit_server_access_token,
-    minConfidence: 0.1,
+    minConfidence: 0.7,
     logLevel: 'debug'
 });
 
@@ -30,6 +32,7 @@ var wit = require('botkit-witai')({
 var User = require('./models/user');
 var Client = require('node-rest-client').Client;
 var restClient = new Client();
+var JiraUser = require('./models/jiraUser');
 require('./controllers/index')(controller,restClient,wit);
 
 // if you are already using Express, you can use your own server instance...
