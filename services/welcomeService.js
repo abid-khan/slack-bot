@@ -16,7 +16,7 @@ welcomeService.welcomeUser = function (user, jiraUser, convo) {
 };
 
 let buildPositiveResponse = (user) => {
-  let welcomeHead = new templates.templateHead(welcomeConstant.text + user.user, []);
+  let welcomeHead = new templates.templateHead(user.user + welcomeConstant.text, []);
   let welcomeBody = new templates.templateBody("", welcomeConstant.description);
   let googleBody = new templates.templateBody(welcomeConstant.google, (welcomeConstant.google_description + welcomeConstant.google_example));
   let jiraBody = new templates.templateBody(welcomeConstant.jira, (welcomeConstant.jira_description + welcomeConstant.jira_example));
@@ -28,7 +28,7 @@ let buildNegativeResponse = () => {
   let welcomeHead = new templates.templateHead(welcomeConstant.text, []);
   let welcomeBody = new templates.templateBody("", welcomeConstant.description);
   let unauthorizedWelcomeBody = new templates.templateBody("", welcomeConstant.unauthorizedWelcomeBody, welcomeConstant.jiraLoginButtonColor, welcomeConstant.jiraLoginButtonId, [], []);
-  let authAction = new templates.templateAction("auth", welcomeConstant.authButton, "auth", "primary")
+  let authAction = new templates.templateAction("auth", welcomeConstant.authButton, "", "primary")
   unauthorizedWelcomeBody.actions.push(authAction);
   welcomeHead.attachments.push(welcomeBody, unauthorizedWelcomeBody);
   return welcomeHead;

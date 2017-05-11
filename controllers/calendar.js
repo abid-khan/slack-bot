@@ -2,10 +2,10 @@ module.exports = function (controller, restClient,wit) {
 
     var open = require('open');
     var datetime = require('node-datetime');
-    var Action = require('../vo/meeting/action');
-    var Field = require('../vo/meeting/field');
-    var Meeting = require('../vo/meeting/meeting');
-    var Meetings = require('../vo/meeting/meetings');
+    var Action = require('../vo/common/templateAction');
+    var Field = require('../vo/common/templateField');
+    var Meeting = require('../vo/common/templateBody');
+    var Meetings = require('../vo/common/templateHead');
 
 
     //--Enable wit as middleware

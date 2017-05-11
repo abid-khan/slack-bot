@@ -40,7 +40,7 @@ module.exports = function (controller,wit) {
                             }else if(firstEntityValue(message.entities,'iamassigned')){
                                 jiraService.getAllOpenIssues(message.user, 'iamassigned', convo);
                             }else{
-
+                                jiraService.askMoreQuestions(message.user, convo);
                             }
                         } else {
                             welcomeService.welcomeUser(user, jiraUser, convo);
@@ -49,6 +49,25 @@ module.exports = function (controller,wit) {
                 }
             });
         });
+    });
+
+    controller.hears(['issues'], 'direct_message, direct_mention', function (bot, message) {
+       bot.startConversation(message, function(err, convo) {
+           userService.findById(message.user).then(function(user) {
+               if(user) {
+                   console.log("Slack user found "+ user.user);
+                   jiraUserService.findById(user.id).then(function (jiraUser) {
+                       if(jiraUser) {
+                           console.log("Jira User found " + jiraUser.userId);
+                           jiraService.askMoreQuestions(message.user, convo);
+                       }
+                       else {
+                               welcomeService.welcomeUser(user, jiraUser, convo);
+                           }
+                       });
+               }
+           });
+       })
     });
 
     controller.hears(['show issue with id'], 'direct_message, direct_mention', function(bot, message) {
