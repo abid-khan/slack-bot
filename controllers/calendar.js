@@ -1,12 +1,7 @@
 module.exports = function (controller, restClient,wit,winston) {
 
     var open = require('open');
-    var opn = require('opn');
-    var datetime = require('node-datetime');
-    var Action = require('../vo/common/templateAction');
-    var Field = require('../vo/common/templateField');
-    var Meeting = require('../vo/common/templateBody');
-    var Meetings = require('../vo/common/templateHead');
+    var base64 = require('base-64');
 
 
     //--Enable wit as middleware
@@ -67,33 +62,19 @@ module.exports = function (controller, restClient,wit,winston) {
                                     {
                                         name: "Authorize",
                                         text: "Authorize",
-                                        value: "authorize",
+                                        value: base64.encode(data.url),
                                         type: "button",
                                         style: "primary",
                                     }
                                 ]
                             }
                         ]
-                    }, [
-                        {
-                            pattern: "authorize",
-                            callback: function (reply, convo) {
-                                convo.say("You are being redirect...");
-                                open(url);
-                            }
-                        },
-                        {
-                            default: true,
-                            callback: function (reply, convo) {
-                                // do nothing
-                            }
-                        }
-                    ]);
+                    });
                 }else{
-                    convo.say({
+                    bot.reply(message,{
                         attachments: [
                             {
-                                title: ':+1: choose max number of meeting you wish to have on your :knife_fork_plate:',
+                                title: 'Number',
                                 callback_id: 'meeting_count',
                                 attachment_type: 'default',
                                 actions: [
@@ -102,6 +83,8 @@ module.exports = function (controller, restClient,wit,winston) {
                                         "text": "5",
                                         "value": "5",
                                         "type": "button",
+                                        style: "primary",
+
                                     },
                                     {
                                         "name": "10",
@@ -115,6 +98,7 @@ module.exports = function (controller, restClient,wit,winston) {
                     });
                 }
             }).catch(function(err){
+                console.log(err);
                 winston.log(err);
             });
         });

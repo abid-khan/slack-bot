@@ -1,5 +1,11 @@
-module.exports = function (controller,winston) {
+module.exports = function (controller,restClient,winston) {
     var open = require('open');
+    var base64 = require('base-64');
+    var datetime = require('node-datetime');
+    var Action = require('../vo/common/templateAction');
+    var Field = require('../vo/common/templateField');
+    var Meeting = require('../vo/common/templateBody');
+    var Meetings = require('../vo/common/templateHead');
 
 
     var buildAction = (name, text, value,style) => {
@@ -43,14 +49,14 @@ module.exports = function (controller,winston) {
      * @returns {Promise}
      */
     var findMeetings = (userId,channelId,teamId, count) => {
-        return new Promise(function (successCallback, errorCallback) {
+
+        return new Promise(function (callback) {
             restClient.get(process.env.restClientUrl + "/google/calendar/meetings", constructArgument(userId, channelId, teamId, count),
                 function (data, response) {
-                    winston.log("Meetings ..." + JSON.stringify(data));
-                    successCallback(data);
+                    callback(data);
                 }).on("error", function (err) {
                 winston.log('something went wrong on the request', JSON.stringify(err));
-                errorCallback(err);
+                throw err;
             });
         });
     };
@@ -58,38 +64,36 @@ module.exports = function (controller,winston) {
 
     var buildMeetingList=(data)=>{
         var meetings = new Array();
-        for (var i = 0; i < data.items.length; i++) {
-            //-------Add fields
-            var fields=new Array();
-            //--Add where
-            var whereField = buildField('Where',data.items[i].location,true);
-            fields.push(whereField);
-            //--Add when
-            var startTime = datetime.create(data.items[i].startTime);
-            var fomrattedTime = startTime.format('m/d/Y H:M:S');
-            var whenField = buildField('When',fomrattedTime,true);
-            fields.push(whenField);
+        var replyAsAttachment = buildMeetings("Noting on your :knife_fork_plate:",meetings);
+        if(data.items && data.items.length > 0){
+            for (var i = 0; i < data.items.length; i++) {
+                //-------Add fields
+                var fields=new Array();
+                //--Add where
+                var whereField = buildField('Where',data.items[i].location,true);
+                fields.push(whereField);
+                //--Add when
+                var startTime = datetime.create(data.items[i].startTime);
+                var fomrattedTime = startTime.format('m/d/Y H:M:S');
+                var whenField = buildField('When',fomrattedTime,true);
+                fields.push(whenField);
 
-            //--------Add Actions
-            var actions =  new Array();
-            if(data.items[i].hangoutLink){
-                var hangoutAction=buildAction("hangout","Join Meeting",data.items[i].hangoutLink, 'primary');
-                actions.push(hangoutAction);
-            }else{
-                actions=null;
+                //--------Add Actions
+                var actions =  new Array();
+                if(data.items[i].hangoutLink){
+                    var hangoutAction=buildAction("hangout","Join Meeting",base64.encode(data.items[i].hangoutLink), 'primary');
+                    actions.push(hangoutAction);
+                }else{
+                    actions=null;
+                }
+
+
+                var meeting= buildMeeting(data.items[i].summary,data.items[i].description,data.items[i].color ? data.items[i].color:'#7CD197','google_meeting',fields,actions);
+                meetings.push(meeting);
             }
+             replyAsAttachment = buildMeetings("Your :knife_fork_plate: is full with :point_down: meetings",meetings);
 
-
-            var meeting= buildMeeting(data.items[i].summary,data.items[i].description,data.items[i].color ? data.items[i].color:'#7CD197','google_meeting',fields,actions);
-            meetings.push(meeting);
         }
-
-        if(data.items.length > 0){
-            var replyAsAttachment = buildMeetings("Your :knife_fork_plate: is full with :point_down: meetings",meetings);
-        }else{
-            var replyAsAttachment = buildMeetings("Noting on your :knife_fork_plate:",meetings);
-        }
-
         return replyAsAttachment;
     };
 
@@ -97,20 +101,31 @@ module.exports = function (controller,winston) {
 
     // receive an interactive message, and reply with a message that will replace the original
     controller.on('interactive_message_callback', function (bot, message) {
-        winston.log("innn ::" +JSON.stringify(message))
+        console.log("accc.." + JSON.stringify(message));
         bot.startConversation(message, function (err, convo) {
             if (message.callback_id == 'google_meeting') {
                 //---Open hangout link
                 convo.say("You are being redirected....")
-                open(message.actions[0].value);
+                open(base64.decode(message.actions[0].value));
+            }
+
+            if (message.callback_id == 'google_oauth') {
+                //---Open hangout link
+                convo.say("You are being redirected....")
+                console.log("url.."+base64.decode(message.actions[0].value));
+                open(base64.decode(message.actions[0].value));
             }
 
             if (message.callback_id == 'meeting_count') {
-                findMeetings(message.user,message.channel, message.team, message.actions[0].value).then(function(data){
+                console.log("Fetching meetings...");
+                findMeetings(message.user,message.channel, message.team.id, message.actions[0].value).then(function(data){
+                    console.log("data.."+JSON.stringify(data));
                     convo.say(buildMeetingList(data));
-                }, function (err) {
-                    winston.error("Failed due to ", err);
+                    }
+                ).catch(function(err){
+                    console.log(err);
                 });
+
             }
 
         });
