@@ -19,11 +19,18 @@ var controller = Botkit.slackbot({
 });
 
 
+var wit = require('botkit-witai')({
+    accessToken: process.env.wit_server_access_token,
+    minConfidence: 0.1,
+    logLevel: 'debug'
+});
+
+
 
 var User = require('./models/user');
 var Client = require('node-rest-client').Client;
 var restClient = new Client();
-require('./controllers/index')(controller,restClient);
+require('./controllers/index')(controller,restClient,wit);
 
 // if you are already using Express, you can use your own server instance...
 // see "Use BotKit with an Express web server"

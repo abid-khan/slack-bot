@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -17,8 +17,8 @@
     "mongoose": "4.9.6",
     "node-datetime": "1.0.0",
     "node-rest-client": "3.1.0",
+    "nodemon": "1.11.0",
     "open": "0.0.5",
-    "mongoose": "4.9.6",
     "request": "^2.81.0",
     "request-promise": "^4.2.1"
   },

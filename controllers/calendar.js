@@ -1,4 +1,4 @@
-module.exports = function (controller, restClient) {
+module.exports = function (controller, restClient,wit) {
 
     var open = require('open');
     var datetime = require('node-datetime');
@@ -6,6 +6,10 @@ module.exports = function (controller, restClient) {
     var Field = require('../vo/meeting/field');
     var Meeting = require('../vo/meeting/meeting');
     var Meetings = require('../vo/meeting/meetings');
+
+
+    //--Enable wit as middleware
+    controller.middleware.receive.use(wit.receive);
 
 
     var buildAction = (name, text, value,style) => {
@@ -70,8 +74,9 @@ module.exports = function (controller, restClient) {
      * @param count
      * @returns {Promise}
      */
-    var findMeetings = (userId, count) => {
+    var findMeetings = (convo,userId, count) => {
         return new Promise(function (successCallback, errorCallback) {
+            convo.say("	:loading: ...we are preparing your :knife_fork_plate: ");
             restClient.get(process.env.restClientUrl + "/google/calendar/meetings", constructArgument(userId, count),
                 function (data, response) {
                     console.log("Meetings ..." + JSON.stringify(data));
@@ -84,7 +89,7 @@ module.exports = function (controller, restClient) {
     };
 
 
-    controller.hears(['meeting'], 'direct_message,direct_mention', function (bot, message) {
+    controller.hears(['meeting'], 'direct_message,direct_mention',wit.hears, function (bot, message) {
         bot.startConversation(message, function (err, convo) {
             convo.say('Hey, there!');
 
@@ -94,7 +99,7 @@ module.exports = function (controller, restClient) {
                 convo.ask({
                     attachments: [
                         {
-                            title: 'How many meetings you want to know?',
+                            title: ':+1: choose max number of meeting you wish to have on your :knife_fork_plate:',
                             callback_id: 'meeting_count',
                             attachment_type: 'default',
                             actions: [
@@ -118,7 +123,7 @@ module.exports = function (controller, restClient) {
                         pattern: "5",
                         callback: function (reply, convo) {
                             console.log("user requested for upcoming " + 5 + " meetings");
-                            findMeetings(message.user, 5).then(function (data) {
+                            findMeetings(convo,message.user, 5).then(function (data) {
                                 console.log(JSON.stringify(data));
 
                                 var meetings = new Array();
@@ -148,7 +153,12 @@ module.exports = function (controller, restClient) {
                                     meetings.push(meeting);
                                 }
 
-                                var replyAsAttachment = buildMeetings("Your upcoming meetings...",meetings);
+                                if(data.items.length > 0){
+                                    var replyAsAttachment = buildMeetings("Your :knife_fork_plate: is full with :point_down: meetings",meetings);
+                                }else{
+                                    var replyAsAttachment = buildMeetings("Noting on your :knife_fork_plate:",meetings);
+                                }
+
 
                                 bot.reply(message, replyAsAttachment);
                                 convo.next();
@@ -185,7 +195,7 @@ module.exports = function (controller, restClient) {
 
                 console.log('Not authorized..', url);
                 convo.ask({
-                    text: 'Oops! you have not authorized me to access your calendar.',
+                    text: 'Oops! :flushed: you have not authorized me to access your calendar.To help you ,please authorize me :point_down:',
                     attachments: [
                         {
                             title: 'Authorize me',
