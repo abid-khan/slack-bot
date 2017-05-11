@@ -1,9 +1,11 @@
 'use strict';
 
-var jiraService = require('../services/jiraService');
-var templateService = require('../services/templateService');
-var constants = require('../config/constants_dev');
-var templates = require('../templates/templates');
+let jiraService = require('../services/jiraService');
+let userService = require('../services/userService');
+let jiraUserService = require('../services/jiraUserService');
+let welcomeService = require('../services/welcomeService');
+
+
 
 var firstEntityValue = (entities, entity) => {
     const val = entities && entities[entity] &&
@@ -22,35 +24,56 @@ module.exports = function (controller,wit) {
     controller.middleware.receive.use(wit.receive);
 
 
-    controller.hears(['task','ihavebeenmentioned','reportedbyme','iamassigned'], 'direct_message, direct_mention', wit.hears,function (bot, message) {
+    controller.hears(['task','ihavebeenmentioned','reportedbyme','iamassigned'], 'direct_message, direct_mention', wit.hears, function (bot, message) {
         bot.startConversation(message, function (err, convo) {
 
-           if(firstEntityValue(message.entities,'ihavebeenmentioned')){
-               //Fetch mentioned issues
-           }else if(firstEntityValue(message.entities,'reportedbyme')){
-               //Fetch reported by me
+            userService.findById(message.user).then(function(user) {
+                if(user) {
+                    console.log("Slack user found "+ user.user);
+                    jiraUserService.findById(user.id).then(function (jiraUser) {
+                        if(jiraUser) {
+                            console.log("Jira User found " + jiraUser.userId);
+                            if(firstEntityValue(message.entities,'ihavebeenmentioned')){
+                                jiraService.getAllOpenIssues(message.user, 'ihavebeenmentioned', convo);
+                            }else if(firstEntityValue(message.entities,'reportedbyme')){
+                                jiraService.getAllOpenIssues(message.user, 'reportedbyme', convo);
+                            }else if(firstEntityValue(message.entities,'iamassigned')){
+                                jiraService.getAllOpenIssues(message.user, 'iamassigned', convo);
+                            }else{
 
-           }else if(firstEntityValue(message.entities,'iamassigned')){
-               //TODO fetch my open
-
-           }else{
-               //Ask for  option show message with button
-           }
-
-            jiraService.openIssues('123')
-                .then(function (response, body) {
-                    var response = JSON.parse(response);
-                    var issues = response.issues;
-                    convo.say(constants.convo.openIssuesResponse);
-                    issues.forEach(function(issue) {
-                        issue = templateService.addMetaData(issue, {color : constants.priority[issue.priority.name]});
-                        var enhancedData = templateService.enhance(templates.openIssueTemplate, templates.openIssueTemplateKey, issue);
-                        convo.say(enhancedData);
+                            }
+                        } else {
+                            welcomeService.welcomeUser(user, jiraUser, convo);
+                        }
                     });
-                })
-                .catch(function(err) {
-                    convo.say("Something went wrong!!" + err);
-                })
+                }
+            });
         });
     });
+
+    controller.hears(['show issue with id'], 'direct_message, direct_mention', function(bot, message) {
+        bot.startConversation(message, function(err, convo) {
+            let issueId = message.text.replace('show issue with id','').trim();
+            if(issueId) {
+                jiraService.getOpenIssueById(message.user, issueId, convo);
+            }
+            else {
+                welcomeService.welcomeUser(user, jiraUser, convo);
+            }
+        });
+    });
+
+
+    controller.hears(['show comments for issue with id'], 'direct_message, direct_mention', function(bot, message) {
+        bot.startConversation(message, function(err, convo) {
+            let issueId = message.text.replace('show comments for issue with id','').trim();
+            if(issueId) {
+                jiraService.getCommentsForIssue(message.user, issueId, convo);
+            }
+            else {
+                welcomeService.welcomeUser(user, jiraUser, convo);
+            }
+        });
+    });
+
 };

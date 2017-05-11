@@ -1,11 +1,13 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://127.0.0.1/slack');
 var Schema = mongoose.Schema;
+
 var userSchema = new Schema({
-    id:String,
-    channel:String,
-    team:String
+    id: String,
+    user: String,
+    team_id: String,
+    access_token: String
 });
 
 var User = mongoose.model('User', userSchema);
+
 module.exports = User;
