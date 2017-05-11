@@ -10,15 +10,15 @@ var constants = require('../config/constants_dev');
 var templates = require('../templates/templates');
 var welcomeService = require('../services/welcomeService');
 
-module.exports = function(controller) {
+module.exports = function(controller,winston) {
     controller.on('bot_channel_join', function(bot, message) {
-        console.log('bot channel joined');
-        console.log(message);
+        winston.log('bot channel joined');
+        winston.log(message);
     });
 
     controller.on('user_channel_join', function(bot, message) {
-        console.log('user channel joined');
-        console.log(message);
+        winston.log('user channel joined');
+        winston.log(message);
     });
 
     controller.hears(['Redirecting to'], 'direct_message,direct_mention', function(bot, message) {

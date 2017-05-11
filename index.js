@@ -5,6 +5,10 @@ var Botkit = require('botkit');
 var mongoStorage = require('botkit-storage-mongo')({mongoUri: 'mongodb://127.0.0.1/slack'});
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://127.0.0.1/slack');
+//---------Logging-----------
+var winston = require('winston');
+winston.add(winston.transports.File, { filename: 'appbot.log' });
+//winston.remove(winston.transports.Console);
 
 var controller = Botkit.slackbot({
     debug: false,
@@ -23,7 +27,7 @@ var controller = Botkit.slackbot({
 
 var wit = require('botkit-witai')({
     accessToken: process.env.wit_server_access_token,
-    minConfidence: 0.7,
+    minConfidence: 0.1,
     logLevel: 'debug'
 });
 
@@ -33,7 +37,7 @@ var User = require('./models/user');
 var Client = require('node-rest-client').Client;
 var restClient = new Client();
 var JiraUser = require('./models/jiraUser');
-require('./controllers/index')(controller,restClient,wit);
+require('./controllers/index')(controller,restClient,wit,winston);
 
 // if you are already using Express, you can use your own server instance...
 // see "Use BotKit with an Express web server"

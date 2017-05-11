@@ -18,7 +18,7 @@ var firstEntityValue = (entities, entity) => {
     return typeof val === 'object' ? val.value : val;
 };
 
-module.exports = function (controller,wit) {
+module.exports = function (controller,wit,winston) {
 
     //--Enable wit as middleware
     controller.middleware.receive.use(wit.receive);
@@ -29,10 +29,10 @@ module.exports = function (controller,wit) {
 
             userService.findById(message.user).then(function(user) {
                 if(user) {
-                    console.log("Slack user found "+ user.user);
+                    winston.log("Slack user found "+ user.user);
                     jiraUserService.findById(user.id).then(function (jiraUser) {
                         if(jiraUser) {
-                            console.log("Jira User found " + jiraUser.userId);
+                            winston.log("Jira User found " + jiraUser.userId);
                             if(firstEntityValue(message.entities,'ihavebeenmentioned')){
                                 jiraService.getAllOpenIssues(message.user, 'ihavebeenmentioned', convo);
                             }else if(firstEntityValue(message.entities,'reportedbyme')){
@@ -55,10 +55,10 @@ module.exports = function (controller,wit) {
        bot.startConversation(message, function(err, convo) {
            userService.findById(message.user).then(function(user) {
                if(user) {
-                   console.log("Slack user found "+ user.user);
+                   winston.log("Slack user found "+ user.user);
                    jiraUserService.findById(user.id).then(function (jiraUser) {
                        if(jiraUser) {
-                           console.log("Jira User found " + jiraUser.userId);
+                           winston.log("Jira User found " + jiraUser.userId);
                            jiraService.askMoreQuestions(message.user, convo);
                        }
                        else {
