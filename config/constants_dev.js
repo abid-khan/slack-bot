@@ -4,7 +4,7 @@ var constants = {};
 
 constants.baseUrl = 'http://localhost:9090';
 constants.apiUrl = constants.baseUrl + '/api';
-constants.oauthUrl = constants.apiUrl + '/oauth/jira?userId=';
+constants.oauthUrl = constants.apiUrl + '/oauth/jira';
 constants.allIssuesUrl = constants.apiUrl+'/jira/issues';
 constants.convo = {
     openIssuesResponse : 'Here is the list of issues...',

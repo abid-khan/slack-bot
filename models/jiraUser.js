@@ -3,6 +3,8 @@ var Schema = mongoose.Schema;
 
 var jiraUserSchema = new Schema({
     userId:String,
+    channelId: String,
+    teamId: String,
     requestToken:String,
     accessToken: String
 }, { collection: 'jirauser' });

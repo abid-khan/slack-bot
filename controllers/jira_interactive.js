@@ -28,7 +28,8 @@ module.exports = function (controller) {
         // check message.actions and message.callback_id to see what action to take...
         bot.startConversation(message, function (err, convo) {
             if(constants.convo.welcome.jiraLoginButtonId === message.callback_id) {
-                rp.get(constants.oauthUrl + message.user).then(function(resp) {
+                console.log(message);
+                rp.get(constants.oauthUrl + '?userId=' + message.user + '&teamId='+ message.team.id + '&channelId=' + message.channel).then(function(resp) {
                     let jsonResponse = JSON.parse(resp);
                     console.log("response"+ jsonResponse);
                     open(jsonResponse.url);
