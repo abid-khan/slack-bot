@@ -1,6 +1,7 @@
 module.exports = function (controller, restClient,wit) {
 
     var open = require('open');
+    var opn = require('opn');
     var datetime = require('node-datetime');
     var Action = require('../vo/common/templateAction');
     var Field = require('../vo/common/templateField');
@@ -45,6 +46,11 @@ module.exports = function (controller, restClient,wit) {
         return args;
     };
 
+    var openLink=(url)=>{
+        return new Promise(function(callback){
+            open(url);
+        });
+    };
 
     /**
      *
@@ -76,7 +82,6 @@ module.exports = function (controller, restClient,wit) {
      */
     var findMeetings = (convo,userId,channelId,teamId, count) => {
         return new Promise(function (successCallback, errorCallback) {
-            convo.say("	:loading: ...we are preparing your :knife_fork_plate: ");
             restClient.get(process.env.restClientUrl + "/google/calendar/meetings", constructArgument(userId, channelId, teamId, count),
                 function (data, response) {
                     console.log("Meetings ..." + JSON.stringify(data));
@@ -89,15 +94,50 @@ module.exports = function (controller, restClient,wit) {
     };
 
 
-    controller.hears(['meeting'], 'direct_message,direct_mention',wit.hears, function (bot, message) {
+    var buildMeetingList=(data)=>{
+        var meetings = new Array();
+        for (var i = 0; i < data.items.length; i++) {
+            //-------Add fields
+            var fields=new Array();
+            //--Add where
+            var whereField = buildField('Where',data.items[i].location,true);
+            fields.push(whereField);
+            //--Add when
+            var startTime = datetime.create(data.items[i].startTime);
+            var fomrattedTime = startTime.format('m/d/Y H:M:S');
+            var whenField = buildField('When',fomrattedTime,true);
+            fields.push(whenField);
+
+            //--------Add Actions
+            var actions =  new Array();
+            if(data.items[i].hangoutLink){
+                var hangoutAction=buildAction("hangout","Join Meeting",data.items[i].hangoutLink, 'primary');
+                actions.push(hangoutAction);
+            }else{
+                actions=null;
+            }
+
+
+            var meeting= buildMeeting(data.items[i].summary,data.items[i].description,data.items[i].color ? data.items[i].color:'#7CD197','google_meeting',fields,actions);
+            meetings.push(meeting);
+        }
+
+        if(data.items.length > 0){
+            var replyAsAttachment = buildMeetings("Your :knife_fork_plate: is full with :point_down: meetings",meetings);
+        }else{
+            var replyAsAttachment = buildMeetings("Noting on your :knife_fork_plate:",meetings);
+        }
+
+        return replyAsAttachment;
+    };
+
+
+    controller.hears(['meeting'], 'direct_message,direct_mention', function (bot, message) {
         bot.startConversation(message, function (err, convo) {
             convo.say('Hey, there!');
 
-            console.log("mm.."+ JSON.stringify(message));
-
             isAuthorized(message.user,message.channel, message.team).then(function () {
-                //handle authorized flow
-                //TODO
+
                 convo.ask({
                     attachments: [
                         {
@@ -125,61 +165,25 @@ module.exports = function (controller, restClient,wit) {
                         pattern: "5",
                         callback: function (reply, convo) {
                             console.log("user requested for upcoming " + 5 + " meetings");
-                            findMeetings(convo,message.user,message.channel, message.team, 5).then(function (data) {
-                                console.log(JSON.stringify(data));
-
-                                var meetings = new Array();
-                                for (var i = 0; i < data.items.length; i++) {
-                                    //-------Add fields
-                                    var fields=new Array();
-                                    //--Add where
-                                    var whereField = buildField('Where',data.items[i].location,true);
-                                    fields.push(whereField);
-                                    //--Add when
-                                    var startTime = datetime.create(data.items[i].startTime);
-                                    var fomrattedTime = startTime.format('m/d/Y H:M:S');
-                                    var whenField = buildField('When',fomrattedTime,true);
-                                    fields.push(whenField);
-
-                                    //--------Add Actions
-                                    var actions =  new Array();
-                                    if(data.items[i].hangoutLink){
-                                        var hangoutAction=buildAction("hangout","Join Meeting",data.items[i].hangoutLink, 'primary');
-                                        actions.push(hangoutAction);
-                                    }else{
-                                        actions=null;
-                                    }
-
-
-                                    var meeting= buildMeeting(data.items[i].summary,data.items[i].description,data.items[i].color ? data.items[i].color:'#7CD197','google_meeting',fields,actions);
-                                    meetings.push(meeting);
-                                }
-
-                                if(data.items.length > 0){
-                                    var replyAsAttachment = buildMeetings("Your :knife_fork_plate: is full with :point_down: meetings",meetings);
-                                }else{
-                                    var replyAsAttachment = buildMeetings("Noting on your :knife_fork_plate:",meetings);
-                                }
-
-
-                                bot.reply(message, replyAsAttachment);
-                                convo.next();
+                            convo.say('...');
+                            findMeetings(convo,message.user,message.channel, message.team, 5).then(function(data){
+                                bot.reply(message, buildMeetingList(data));
                             }, function (err) {
                                 console.error("Failed due to ", err);
-
                             });
                             convo.next();
+
                         }
                     },
                     {
                         pattern: "10",
                         callback: function (reply, convo) {
                             console.log("user requested for upcoming " + 10 + " meetings");
-                            findMeetings(message.user, 5).then(function (data) {
-                                console.log(JSON.stringify(data));
+                            convo.say('...');
+                            findMeetings(convo,message.user,message.channel, message.team, 10).then(function(data){
+                                bot.reply(message, buildMeetingList(data));
                             }, function (err) {
                                 console.error("Failed due to ", err);
-
                             });
                             convo.next();
                         }
@@ -191,7 +195,6 @@ module.exports = function (controller, restClient,wit) {
                         }
                     }
                 ]);
-
             }, function (url) {
                 //handle unauthorized flow
 
@@ -218,6 +221,7 @@ module.exports = function (controller, restClient,wit) {
                     {
                         pattern: "authorize",
                         callback: function (reply, convo) {
+                            convo.say("You are being redirect...");
                             open(url);
                             convo.next();
                         }
@@ -226,14 +230,13 @@ module.exports = function (controller, restClient,wit) {
                         default: true,
                         callback: function (reply, convo) {
                             // do nothing
-                            convo.next();
                         }
                     }
                 ]);
             }).catch(function (err) {
                 console.error("Failed due to ", err);
+                convo.next();
             });
-
         });
     });
 };
