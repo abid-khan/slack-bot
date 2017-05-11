@@ -3,12 +3,12 @@
  */
 'use strict';
 
-var jiraService = require('../services/jiraService');
-var templateService = require('../services/templateService');
-var constants = require('../config/constants_dev');
-var templates = require('../templates/templates');
-var open = require('open');
-var rp = require('request-promise');
+let jiraService = require('../services/jiraService');
+let templateService = require('../services/templateService');
+let constants = require('../config/constants_dev');
+let templates = require('../templates/templates');
+let open = require('open');
+let rp = require('request-promise');
 
 
 module.exports = function (controller) {
@@ -20,7 +20,8 @@ module.exports = function (controller) {
         // check message.actions and message.callback_id to see what action to take...
         bot.startConversation(message, function (err, convo) {
             if(constants.convo.issueDetailButtonId === message.callback_id) {
-                convo.say(templates.dummySingleIssueTemplate);
+                let jiraId = message.text;
+                jiraService.getOpenIssueById(message.user, jiraId, convo);
             }
         });
 
@@ -28,7 +29,7 @@ module.exports = function (controller) {
         bot.startConversation(message, function (err, convo) {
             if(constants.convo.welcome.jiraLoginButtonId === message.callback_id) {
                 rp.get(constants.oauthUrl + message.user).then(function(resp) {
-                    var jsonResponse = JSON.parse(resp);
+                    let jsonResponse = JSON.parse(resp);
                     console.log("response"+ jsonResponse);
                     open(jsonResponse.url);
                     convo.next();
