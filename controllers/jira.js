@@ -70,9 +70,9 @@ module.exports = function (controller,wit,winston) {
        })
     });
 
-    controller.hears(['show issue with id'], 'direct_message, direct_mention', function(bot, message) {
+    controller.hears(['taskdetail'], 'direct_message, direct_mention', function(bot, message) {
         bot.startConversation(message, function(err, convo) {
-            let issueId = message.text.replace('show issue with id','').trim();
+            let issueId = firstEntityValue(message.entities,'taskid').trim();
             if(issueId) {
                 jiraService.getOpenIssueById(message.user, issueId, convo);
             }
@@ -83,9 +83,9 @@ module.exports = function (controller,wit,winston) {
     });
 
 
-    controller.hears(['show comments for issue with id'], 'direct_message, direct_mention', function(bot, message) {
+    controller.hears(['taskcomment'], 'direct_message, direct_mention', function(bot, message) {
         bot.startConversation(message, function(err, convo) {
-            let issueId = message.text.replace('show comments for issue with id','').trim();
+            let issueId = firstEntityValue(message.entities,'taskid').trim();
             if(issueId) {
                 jiraService.getCommentsForIssue(message.user, issueId, convo);
             }
