@@ -1,4 +1,4 @@
-module.exports = function (controller, restClient,wit,winston) {
+module.exports = function (controller, restClient,wit,logger) {
 
     var open = require('open');
     var base64 = require('base-64');
@@ -31,26 +31,23 @@ module.exports = function (controller, restClient,wit,winston) {
         return new Promise(function (callback) {
             restClient.get(process.env.restClientUrl + "/oauth/google", constructArgument(userId, channelId, teamId, 0),
                 function (data, response) {
-                    winston.log("Is authorized for userId " + userId + " .. " + JSON.stringify(data));
+                    logger.info("Is authorized for userId " + userId + " .. " + data);
                     callback(data);
                 }).on("error", function (err) {
-                winston.log('something went wrong on the request', JSON.stringify(err));
+                logger.info('something went wrong on the request'+ err);
                 throw err;
             });
         });
     };
 
 
-
-
     controller.hears(['meeting'], 'direct_message,direct_mention',wit.hears, function (bot, message) {
-        winston.log("here.......");
 
         bot.startConversation(message, function (err, convo) {
             convo.say('Hey, there!');
             isAuthorized(message.user,message.channel, message.team).then(function(data){
                 if (data.url) {
-                    winston.log(data.url);
+                    logger.info(data.url);
                     convo.say({
                         text: 'Oops! :flushed: you have not authorized me to access your calendar.To help you ,please authorize me :point_down:',
                         attachments: [
@@ -98,8 +95,7 @@ module.exports = function (controller, restClient,wit,winston) {
                     });
                 }
             }).catch(function(err){
-                console.log(err);
-                winston.log(err);
+                logger.error(err);
             });
         });
     });

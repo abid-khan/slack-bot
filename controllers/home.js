@@ -10,7 +10,7 @@ var constants = require('../config/constants_dev');
 var templates = require('../templates/templates');
 var welcomeService = require('../services/welcomeService');
 
-module.exports = function(controller,winston) {
+module.exports = function(controller,logger) {
     controller.on('bot_channel_join', function(bot, message) {
         winston.log('bot channel joined');
         winston.log(message);

@@ -11,25 +11,25 @@ let open = require('open');
 let rp = require('request-promise');
 
 
-module.exports = function (controller,winston) {
+module.exports = function (controller,logger) {
     // receive an interactive message, and reply with a message that will replace the original
     controller.on('interactive_message_callback', function (bot, message) {
 
-        winston.log(message);
+        logger.log(message);
 
         // check message.actions and message.callback_id to see what action to take...
 
         bot.startConversation(message, function (err, convo) {
             if (constants.convo.welcome.jiraLoginButtonId === message.callback_id) {
 
-                winston.log(message);
+                logger.log(message);
                 rp.get(constants.oauthUrl + '?userId=' + message.user + '&teamId=' + message.team.id + '&channelId=' + message.channel).then(function (resp) {
                     let jsonResponse = JSON.parse(resp);
-                    winston.log("response" + jsonResponse);
+                    logger.log("response" + jsonResponse);
                     convo.say({text: 'Redirecting to JIRA!!! :airplane:'});
                     open(jsonResponse.url);
                 }).catch(function (err) {
-                    winston.log("Err" + err);
+                    logger.log("Err", err);
                 });
             }
 

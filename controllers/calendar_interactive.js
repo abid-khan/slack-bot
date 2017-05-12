@@ -1,4 +1,4 @@
-module.exports = function (controller,restClient,winston) {
+module.exports = function (controller,restClient,logger) {
     var open = require('open');
     var base64 = require('base-64');
     var datetime = require('node-datetime');
@@ -55,7 +55,7 @@ module.exports = function (controller,restClient,winston) {
                 function (data, response) {
                     callback(data);
                 }).on("error", function (err) {
-                winston.log('something went wrong on the request', JSON.stringify(err));
+                logger.log('something went wrong on the request', err);
                 throw err;
             });
         });
@@ -101,33 +101,34 @@ module.exports = function (controller,restClient,winston) {
 
     // receive an interactive message, and reply with a message that will replace the original
     controller.on('interactive_message_callback', function (bot, message) {
-        console.log("accc.." + JSON.stringify(message));
+
         bot.startConversation(message, function (err, convo) {
             if (message.callback_id == 'google_meeting') {
                 //---Open hangout link
                 convo.say("You are being redirected....")
                 open(base64.decode(message.actions[0].value));
+                convo.end();
             }
 
             if (message.callback_id == 'google_oauth') {
                 //---Open hangout link
                 convo.say("You are being redirected....")
-                console.log("url.."+base64.decode(message.actions[0].value));
+                logger.log("url.."+base64.decode(message.actions[0].value));
                 open(base64.decode(message.actions[0].value));
+
             }
 
             if (message.callback_id == 'meeting_count') {
-                console.log("Fetching meetings...");
+                logger.log("Fetching meetings...");
                 findMeetings(message.user,message.channel, message.team.id, message.actions[0].value).then(function(data){
-                    console.log("data.."+JSON.stringify(data));
                     convo.say(buildMeetingList(data));
                     }
                 ).catch(function(err){
-                    console.log(err);
+                    logger.log(err);
                 });
 
             }
-
+            convo.end();
         });
 
     });
