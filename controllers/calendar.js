@@ -44,12 +44,11 @@ module.exports = function (controller, restClient,wit,logger) {
     controller.hears(['meeting'], 'direct_message,direct_mention',wit.hears, function (bot, message) {
 
         bot.startConversation(message, function (err, convo) {
-            convo.say('Hey, there!');
             isAuthorized(message.user,message.channel, message.team).then(function(data){
                 if (data.url) {
                     logger.info(data.url);
                     convo.say({
-                        text: 'Oops! :flushed: you have not authorized me to access your calendar.To help you ,please authorize me :point_down:',
+                        text: 'Oops! :flushed: you have not authorized me to access your calendar .To help you ,please authorize me :point_down:',
                         attachments: [
                             {
                                 title: 'Authorize me',
@@ -72,7 +71,7 @@ module.exports = function (controller, restClient,wit,logger) {
                     convo.say({
                         attachments: [
                             {
-                                title: 'Number',
+                                title: "How many meeting you want to know. Don't bother about all :blush:",
                                 callback_id: 'meeting_count',
                                 attachment_type: 'default',
                                 actions: [
