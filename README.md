@@ -42,11 +42,15 @@ restClientUrl=http://localhost:9090/api
 wit_server_access_token=VDCBVLO5PGD3GCJXJVRS6LN65VMPM755
 ```
 
-Before you start, first  one has to create a bot in slack.  To create one for you  go to [slack API](https://api.slack.com/) page and create your app. You have to update 
+Before you start, first  one has to create a bot in slack.  To create one for you  go to [slack API](https://api.slack.com/) page and create your app. You have to update below  pages.
 
-*Bot Users, update bot name. Use some cool name
-*Event sbscriptions, update request URL.If your  server is running on https://d1de3ca1.ngrok.io then the url should be https://d1de3ca1.ngrok.io/slack/receive. While working on local machine you need to create an link to be used.  For this you can use [ngrock](https://ngrok.com/)
-*OAuth & Permissions, update redirect url. If your  server is running on https://d1de3ca1.ngrok.io then the url should be https://d1de3ca1.ngrok.io/oauth 
-*Interactive Message, update Request URL. If your  server is running on https://d1de3ca1.ngrok.io then the url should be https://d1de3ca1.ngrok.io/slack/receive
+##Bot Users##
+Update bot name. Use some cool name
+##Event sbscriptions##
+Update request URL.If your  server is running on https://d1de3ca1.ngrok.io then the url should be https://d1de3ca1.ngrok.io/slack/receive. While working on local machine you need to create an link to be used.  For this you can use [ngrock](https://ngrok.com/)
+##OAuth & Permissions##
+Update redirect url. If your  server is running on https://d1de3ca1.ngrok.io then the url should be https://d1de3ca1.ngrok.io/oauth 
+##Interactive Message##
+Update Request URL. If your  server is running on https://d1de3ca1.ngrok.io then the url should be https://d1de3ca1.ngrok.io/slack/receive
 
 
