@@ -67,8 +67,9 @@ module.exports = function (controller, restClient,wit,logger) {
                             }
                         ]
                     });
+                    convo.next();
                 }else{
-                    bot.reply(message,{
+                    convo.say({
                         attachments: [
                             {
                                 title: 'Number',
@@ -93,6 +94,7 @@ module.exports = function (controller, restClient,wit,logger) {
                             }
                         ]
                     });
+                    convo.next();
                 }
             }).catch(function(err){
                 logger.error(err);
