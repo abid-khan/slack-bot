@@ -44,13 +44,37 @@ wit_server_access_token=VDCBVLO5PGD3GCJXJVRS6LN65VMPM755
 
 Before you start, first  one has to create a bot in slack.  To create one for you  go to [slack API](https://api.slack.com/) page and create your app. You have to update below  pages.
 
-##Bot Users##
+### Bot Users ###
 Update bot name. Use some cool name
-##Event sbscriptions##
+
+### Event sbscriptions ###
 Update request URL.If your  server is running on https://d1de3ca1.ngrok.io then the url should be https://d1de3ca1.ngrok.io/slack/receive. While working on local machine you need to create an link to be used.  For this you can use [ngrock](https://ngrok.com/)
-##OAuth & Permissions##
+
+### OAuth & Permissions ###
 Update redirect url. If your  server is running on https://d1de3ca1.ngrok.io then the url should be https://d1de3ca1.ngrok.io/oauth 
-##Interactive Message##
-Update Request URL. If your  server is running on https://d1de3ca1.ngrok.io then the url should be https://d1de3ca1.ngrok.io/slack/receive
+
+### Interactive Message ###
+Update Request URL. If your  server is running on > https://d1de3ca1.ngrok.io then the url should be https://d1de3ca1.ngrok.io/slack/receive
+
+
+**Copy client id, secret and token from Basic Information page. Update display name , icon etc as per your preference.**
+
+### restClientUrl ###
+It is the URL of the application running to  communicate with gmail and jira. This code is available here [helpbot-rest](https://github.com/abid-khan/helpbot-rest).
+
+## How to run ##
+To run this, go to terminal and execute below commands.
+```
+npm install
+npm start 
+```
+
+## Screencast ##
+### Google Calendar ###
+You can access screencast [here](http://www.screencast.com/t/xtMxwIverg);
+### Jira ###
+You can access screencast [here](https://www.screencast.com/t/2VQMXGbGD);
+
+
 
 
