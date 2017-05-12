@@ -27,7 +27,7 @@ module.exports = function(controller,logger) {
         });
     });
 
-    controller.hears([''], 'direct_message,direct_mention', function(bot, message) {
+    controller.hears(['hi'], 'direct_message,direct_mention', function(bot, message) {
         bot.startConversation(message, function(err, convo) {
             if(message) {
                 userService.findById(message.user).then(function(user) {

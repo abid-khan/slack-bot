@@ -102,34 +102,41 @@ module.exports = function (controller,restClient,logger) {
     // receive an interactive message, and reply with a message that will replace the original
     controller.on('interactive_message_callback', function (bot, message) {
 
-        bot.startConversation(message, function (err, convo) {
+
             if (message.callback_id == 'google_meeting') {
-                //---Open hangout link
-                convo.say("You are being redirected....")
-                open(base64.decode(message.actions[0].value));
-                convo.end();
+                bot.startConversation(message, function (err, convo) {
+                    //---Open hangout link
+                    convo.say("You are being redirected....")
+                    open(base64.decode(message.actions[0].value));
+                    convo.end();
+                });
             }
 
             if (message.callback_id == 'google_oauth') {
-                //---Open hangout link
-                convo.say("You are being redirected....")
-                logger.log("url.."+base64.decode(message.actions[0].value));
-                open(base64.decode(message.actions[0].value));
+                bot.startConversation(message, function (err, convo) {
+                    //---Open hangout link
+                    convo.say("You are being redirected....")
+                    logger.log("url.." + base64.decode(message.actions[0].value));
+                    open(base64.decode(message.actions[0].value));
+                    convo.end();
+                });
 
             }
 
             if (message.callback_id == 'meeting_count') {
-                logger.log("Fetching meetings...");
-                findMeetings(message.user,message.channel, message.team.id, message.actions[0].value).then(function(data){
-                    convo.say(buildMeetingList(data));
-                    }
-                ).catch(function(err){
-                    logger.log(err);
+                bot.startConversation(message, function (err, convo) {
+                    logger.log("Fetching meetings...");
+                    findMeetings(message.user, message.channel, message.team.id, message.actions[0].value).then(function (data) {
+                            convo.say(buildMeetingList(data));
+                            convo.end();
+                        }
+                    ).catch(function (err) {
+                        logger.log(err);
+                    });
                 });
 
             }
-            convo.end();
-        });
+            //convo.end();
 
     });
 };
