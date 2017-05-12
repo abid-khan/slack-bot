@@ -70,7 +70,7 @@ module.exports = function (controller,wit,logger) {
        })
     });
 
-    controller.hears(['taskdetail'], 'direct_message, direct_mention', function(bot, message) {
+    controller.hears(['taskdetail'], 'direct_message, direct_mention', wit.hears,function(bot, message) {
         bot.startConversation(message, function(err, convo) {
             let issueId = firstEntityValue(message.entities,'taskid').trim();
             if(issueId) {
@@ -83,7 +83,7 @@ module.exports = function (controller,wit,logger) {
     });
 
 
-    controller.hears(['taskcomment'], 'direct_message, direct_mention', function(bot, message) {
+    controller.hears(['taskcomment'], 'direct_message, direct_mention',wit.hears, function(bot, message) {
         bot.startConversation(message, function(err, convo) {
             let issueId = firstEntityValue(message.entities,'taskid').trim();
             if(issueId) {

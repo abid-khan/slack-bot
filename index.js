@@ -33,7 +33,7 @@ var controller = Botkit.slackbot({
 
 var wit = require('botkit-witai')({
     accessToken: process.env.wit_server_access_token,
-    minConfidence: 0.1,
+    minConfidence: 0.6,
     logLevel: 'debug'
 });
 
